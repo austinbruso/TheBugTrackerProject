@@ -13,6 +13,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TheBugTrackerProject.Services;
+using TheBugTrackerProject.Services.Interfaces;
 
 namespace BugTrackerProject
 {
@@ -38,6 +40,8 @@ namespace BugTrackerProject
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultUI()
                 .AddDefaultTokenProviders();
+
+            services.AddScoped<IBTRolesService, BTRolesService>();
 
             services.AddControllersWithViews();
         }
