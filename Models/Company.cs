@@ -23,6 +23,6 @@ namespace TheBugTrackerProject.Models
         public virtual ICollection<Project> Projects { get; set; }
 
         //Create Relationship to Invites
-
+        public virtual ICollection<Invite> Invites { get; set; }
     }
 }
