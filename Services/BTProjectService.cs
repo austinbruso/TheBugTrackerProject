@@ -1,5 +1,6 @@
 ﻿using BugTrackerProject.Data;
 using BugTrackerProject.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +23,6 @@ namespace TheBugTrackerProject.Services
         {
             _context.Add(project);
             await _context.SaveChangesAsync();
-
         }
 
         public Task<bool> AddProjectManagerAsync(string userId, int projectId)
@@ -35,9 +35,11 @@ namespace TheBugTrackerProject.Services
             throw new NotImplementedException();
         }
 
-        public Task ArchiveProjectAsync(Project project)
+        public async Task ArchiveProjectAsync(Project project)
         {
-            throw new NotImplementedException();
+            project.Archived = true;
+            _context.Update(project);
+            await _context.SaveChangesAsync();
         }
 
         public Task<List<BTUser>> GetAllProjectMembersExceptPMAsync(int projectId)
@@ -65,9 +67,15 @@ namespace TheBugTrackerProject.Services
             throw new NotImplementedException();
         }
 
-        public Task<Project> GetProjectByIdAsync(int projectId, int companyId)
+        public async Task<Project> GetProjectByIdAsync(int projectId, int companyId)
         {
-            throw new NotImplementedException();
+            Project project = await _context.Projects
+                .Include(p => p.Tickets)
+                .Include(p => p.Members)
+                .Include(p => p.ProjectPriority)
+                .FirstOrDefaultAsync(p => p.Id == projectId && p.CompanyId == companyId);
+
+            return project;
         }
 
         public Task<BTUser> GetProjectManagerAsync(int projectId)
@@ -120,9 +128,10 @@ namespace TheBugTrackerProject.Services
             throw new NotImplementedException();
         }
 
-        public Task UpdateProjectAsync(Project project)
+        public async Task UpdateProjectAsync(Project project)
         {
-            throw new NotImplementedException();
+            _context.Update(project);
+            await _context.SaveChangesAsync();
         }
     }
 }
