@@ -21,7 +21,7 @@ namespace TheBugTrackerProject.Models
 
         [Required]
         [DisplayName("Message")]
-        public int Message { get; set; }
+        public string Message { get; set; }
 
         [DataType(DataType.Date)]
         [DisplayName("Date")]
