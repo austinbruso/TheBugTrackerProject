@@ -12,7 +12,5 @@ namespace TheBugTrackerProject.Models.ViewModel
         public SelectList PMList { get; set; }
         public string PmId { get; set; }
         public SelectList PriorityList { get; set; }
-        public int ProjectPriority { get; set; }
-
     }
 }

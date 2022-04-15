@@ -27,9 +27,12 @@ namespace TheBugTrackerProject.Models
         public string Description { get; set; }
 
         [DisplayName("Start Date")]
+        [DataType(DataType.Date)]
         public DateTimeOffset StartDate { get; set; }
 
         [DisplayName("End Date")]
+        [DataType(DataType.Date)]
+
         public DateTimeOffset EndDate { get; set; }
 
         [DisplayName("Priority")]
@@ -41,6 +44,7 @@ namespace TheBugTrackerProject.Models
 
         [DisplayName("File Name")]
         public string ImageFileName { get; set; }
+
         public byte[] ImageFileData { get; set; }
 
         [DisplayName("File Extension")]
