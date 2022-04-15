@@ -14,8 +14,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TheBugTrackerProject.Data;
 using TheBugTrackerProject.Models;
 using TheBugTrackerProject.Services;
+using TheBugTrackerProject.Services.Factories;
 using TheBugTrackerProject.Services.Interfaces;
 
 namespace BugTrackerProject
@@ -33,13 +35,15 @@ namespace BugTrackerProject
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseNpgsql(
-                    Configuration.GetConnectionString("DefaultConnection")));
+     options.UseNpgsql(DataUtility.GetConnectionString(Configuration),
+   o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
 
-            services.AddDatabaseDeveloperPageExceptionFilter();  
+
+            services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddIdentity<BTUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddClaimsPrincipalFactory<BTUserClaimsPrincipalFactory>()
                 .AddDefaultUI()
                 .AddDefaultTokenProviders();
 
