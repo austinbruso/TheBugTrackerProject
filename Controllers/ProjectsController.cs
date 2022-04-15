@@ -7,16 +7,27 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BugTrackerProject.Data;
 using TheBugTrackerProject.Models;
+using TheBugTrackerProject.Extensions;
+using TheBugTrackerProject.Models.ViewModel;
+using TheBugTrackerProject.Services.Interfaces;
+using TheBugTrackerProject.Models.Enums;
 
 namespace TheBugTrackerProject.Controllers
 {
     public class ProjectsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IBTRolesService _rolesService;
 
-        public ProjectsController(ApplicationDbContext context)
+        public IBTLookupService _lookupService { get; }
+
+        public ProjectsController(ApplicationDbContext context,
+            IBTRolesService rolesService,
+            IBTLookupService lookupService)
         {
             _context = context;
+            _rolesService = rolesService;
+            _lookupService = lookupService;
         }
 
         // GET: Projects
@@ -47,11 +58,21 @@ namespace TheBugTrackerProject.Controllers
         }
 
         // GET: Projects/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Id");
-            ViewData["ProjectPriorityId"] = new SelectList(_context.ProjectPriorities, "Id", "Id");
-            return View();
+            int companyId = User.Identity.GetCompanyId().Value;
+            
+            // Add ViewModel instance
+            AddProjectWithPMViewModel model = new();
+
+            // Load SelectLists with data 
+            model.PMList = new SelectList(await _rolesService.GetUsersInRoleAsync(Roles.ProjectManager.ToString(), companyId), "Id", "FullName");
+            model.PriorityList = new SelectList(await _lookupService.GetProjectPrioritiesAsync(), "Id", "Name");
+
+
+
+          
+            return View(model);
         }
 
         // POST: Projects/Create
