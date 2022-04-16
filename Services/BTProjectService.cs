@@ -31,14 +31,17 @@ namespace TheBugTrackerProject.Services
 
         public async Task<bool> AddProjectManagerAsync(string userId, int projectId) 
         {
+
             BTUser currentPM = await GetProjectManagerAsync(projectId);
 
-            if(currentPM != null)
+            // Remove Project Manager
+            if (currentPM != null)
             {
                 try
                 {
                     await RemoveProjectManagerAsync(projectId);
-                } catch (Exception ex)
+                }
+                catch (Exception ex)
                 {
                     Console.WriteLine($"Error removing PM. {ex.Message}");
                     return false;
@@ -46,15 +49,17 @@ namespace TheBugTrackerProject.Services
             }
 
             //Add the new PM
-            try {
-                await AddProjectManagerAsync(userId, projectId);
+            try
+            {
+                await AddUserToProjectAsync(userId, projectId);
                 return true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine($"Error adding PM. {ex.Message}");
                 return false;
             }
+
         }
 
         public async Task<bool> AddUserToProjectAsync(string userId, int projectId)
