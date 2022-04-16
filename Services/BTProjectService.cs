@@ -134,33 +134,46 @@ namespace TheBugTrackerProject.Services
 
         }
 
-        public async Task<List<Project>> GetAllProjectsByCompany(int companyId)
+        public Task<List<Project>> GetAllProjectsByCompany(int companyId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<List<Project>> GetAllProjectsByCompanyAsync(int companyId)
         {
             List<Project> projects = new();
 
-            projects = await _context.Projects.Where(p => p.CompanyId == companyId && p.Archived == false)
-                .Include(p => p.Members)
-                .Include(p => p.Tickets)
-                    .ThenInclude(t => t.Comments)
-                .Include(p => p.Tickets)
-                    .ThenInclude(t => t.Attachments)
-                .Include(p => p.Tickets)
-                    .ThenInclude(t => t.History)
-                .Include(p => p.Tickets)
-                    .ThenInclude(t => t.Notifications)
-                .Include(p => p.Tickets)
-                    .ThenInclude(t => t.DeveloperUser)
-                .Include(p => p.Tickets)
-                    .ThenInclude(t => t.OwnerUser)
-                .Include(p => p.Tickets)
-                    .ThenInclude(t => t.TicketStatus)
-                .Include(p => p.Tickets)
-                    .ThenInclude(t => t.TicketPriority)
-                .Include(p => p.Tickets)
-                    .ThenInclude(t => t.TicketType)
-                .Include(p => p.ProjectPriority)
-                .ToListAsync();
+            try
+            {
+                projects = await _context.Projects.Where(p => p.CompanyId == companyId && p.Archived == false)
+                       .Include(p => p.Members)
+                       .Include(p => p.Tickets)
+                           .ThenInclude(t => t.Comments)
+                       .Include(p => p.Tickets)
+                           .ThenInclude(t => t.Attachments)
+                       .Include(p => p.Tickets)
+                           .ThenInclude(t => t.History)
+                       .Include(p => p.Tickets)
+                           .ThenInclude(t => t.Notifications)
+                       .Include(p => p.Tickets)
+                           .ThenInclude(t => t.DeveloperUser)
+                       .Include(p => p.Tickets)
+                           .ThenInclude(t => t.OwnerUser)
+                       .Include(p => p.Tickets)
+                           .ThenInclude(t => t.TicketStatus)
+                       .Include(p => p.Tickets)
+                           .ThenInclude(t => t.TicketPriority)
+                       .Include(p => p.Tickets)
+                           .ThenInclude(t => t.TicketType)
+                       .Include(p => p.ProjectPriority)
+                       .ToListAsync();
 
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
             return projects;
         }
 
@@ -174,9 +187,38 @@ namespace TheBugTrackerProject.Services
 
         public async Task<List<Project>> GetArchivedProjectsByCompany(int companyId)
         {
-            List<Project> projects = await GetAllProjectsByCompany(companyId);
+            try
+            {
+                List<Project> projects = await _context.Projects.Where(p => p.CompanyId == companyId && p.Archived == true)
+                       .Include(p => p.Members)
+                       .Include(p => p.Tickets)
+                           .ThenInclude(t => t.Comments)
+                       .Include(p => p.Tickets)
+                           .ThenInclude(t => t.Attachments)
+                       .Include(p => p.Tickets)
+                           .ThenInclude(t => t.History)
+                       .Include(p => p.Tickets)
+                           .ThenInclude(t => t.Notifications)
+                       .Include(p => p.Tickets)
+                           .ThenInclude(t => t.DeveloperUser)
+                       .Include(p => p.Tickets)
+                           .ThenInclude(t => t.OwnerUser)
+                       .Include(p => p.Tickets)
+                           .ThenInclude(t => t.TicketStatus)
+                       .Include(p => p.Tickets)
+                           .ThenInclude(t => t.TicketPriority)
+                       .Include(p => p.Tickets)
+                           .ThenInclude(t => t.TicketType)
+                       .Include(p => p.ProjectPriority)
+                       .ToListAsync();
 
-            return projects.Where(p => p.Archived == true).ToList();
+                return projects;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public Task<List<BTUser>> GetDevelopersOnProjectAsync(int projectId)

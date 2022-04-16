@@ -24,12 +24,13 @@ namespace TheBugTrackerProject.Controllers
         private readonly IBTProjectService _projectService;
         private readonly UserManager<BTUser> _userManger;
         public readonly IBTLookupService _lookupService;
+        public readonly IBTCompanyInfoService _companyInfoService;
 
         public ProjectsController(ApplicationDbContext context,
             IBTRolesService rolesService,
             IBTLookupService lookupService,
             IBTFileService fileService, IBTProjectService projectService,
-            UserManager<BTUser> userManger)
+            UserManager<BTUser> userManger, IBTCompanyInfoService companyInfoService)
         {
             _context = context;
             _rolesService = rolesService;
@@ -37,6 +38,7 @@ namespace TheBugTrackerProject.Controllers
             _fileService = fileService;
             _projectService = projectService;
             _userManger = userManger;
+            _companyInfoService = companyInfoService;
         }
 
         // GET: Projects
@@ -52,6 +54,37 @@ namespace TheBugTrackerProject.Controllers
             string userId = _userManger.GetUserId(User);
 
             List<Project> projects = await _projectService.GetUserProjectsAsync(userId);
+
+            return View(projects);
+        }
+
+        // GET: All Projects
+        public async Task<IActionResult> AllProjects()
+        {
+
+            List<Project> projects = new();
+
+            int companyId = User.Identity.GetCompanyId().Value;
+
+            if(User.IsInRole(nameof(Roles.Admin)) || User.IsInRole(nameof(Roles.ProjectManager)))
+            {
+                projects = await _companyInfoService.GetAllProjectsAsync(companyId);
+            } else
+            {
+                projects = await _projectService.GetAllProjectsByCompany(companyId);
+            }
+
+            return View(projects);
+        }
+
+
+        // GET: Archived Projects
+        public async Task<IActionResult> ArchivedProjects()
+        {
+
+            int companyId = User.Identity.GetCompanyId().Value;
+
+            List<Project> projects = await _projectService.GetArchivedProjectsByCompany(companyId);
 
             return View(projects);
         }
