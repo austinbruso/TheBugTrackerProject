@@ -11,6 +11,8 @@ using TheBugTrackerProject.Extensions;
 using TheBugTrackerProject.Models.ViewModel;
 using TheBugTrackerProject.Services.Interfaces;
 using TheBugTrackerProject.Models.Enums;
+using BugTrackerProject.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace TheBugTrackerProject.Controllers
 {
@@ -20,18 +22,21 @@ namespace TheBugTrackerProject.Controllers
         private readonly IBTRolesService _rolesService;
         private readonly IBTFileService _fileService;
         private readonly IBTProjectService _projectService;
+        private readonly UserManager<BTUser> _userManger;
         public readonly IBTLookupService _lookupService;
 
         public ProjectsController(ApplicationDbContext context,
             IBTRolesService rolesService,
             IBTLookupService lookupService,
-            IBTFileService fileService, IBTProjectService projectService)
+            IBTFileService fileService, IBTProjectService projectService,
+            UserManager<BTUser> userManger)
         {
             _context = context;
             _rolesService = rolesService;
             _lookupService = lookupService;
             _fileService = fileService;
             _projectService = projectService;
+            _userManger = userManger;
         }
 
         // GET: Projects
@@ -40,6 +45,17 @@ namespace TheBugTrackerProject.Controllers
             var applicationDbContext = _context.Projects.Include(p => p.Company).Include(p => p.ProjectPriority);
             return View(await applicationDbContext.ToListAsync());
         }
+
+        // GET: My Projects
+        public async Task<IActionResult> MyProjects()
+        {
+            string userId = _userManger.GetUserId(User);
+
+            List<Project> projects = await _projectService.GetUserProjectsAsync(userId);
+
+            return View(projects);
+        }
+
 
         // GET: Projects/Details/5
         public async Task<IActionResult> Details(int? id)
