@@ -248,8 +248,6 @@ namespace TheBugTrackerProject.Services
             {
                 if(await _rolesService.IsUserInRoleAsync(member, Roles.ProjectManager.ToString()))
                 {
-
-
                     return member;
                 }
             }
@@ -330,6 +328,29 @@ namespace TheBugTrackerProject.Services
             List<BTUser> user = await _context.Users.Where(u => u.Projects.All(p => p.Id != projectId)).ToListAsync();
 
             return user.Where(u => u.CompanyId == companyId ).ToList();
+        }
+
+
+        public async Task<bool> IsAssignProjectManagerAsync(string userId, int projectId)
+        {
+            try
+            {
+                string projectMangerId = (await GetProjectManagerAsync(projectId))?.Id;
+
+                if(projectMangerId == userId)
+                {
+                    return true;
+
+                } else
+                {
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public async Task<bool> IsUserOnProjectAsync(string userId, int projectId)
