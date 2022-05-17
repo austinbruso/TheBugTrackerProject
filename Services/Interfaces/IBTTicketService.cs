@@ -7,7 +7,7 @@ using TheBugTrackerProject.Models;
 
 namespace TheBugTrackerProject.Services.Interfaces
 {
-    public interface IBTTicketService
+    public interface IBTTicketService 
     {
         // CRUD Methods
         public Task AddNewTicketAsync(Ticket ticket);
@@ -32,7 +32,7 @@ namespace TheBugTrackerProject.Services.Interfaces
         public Task<List<Ticket>> GetProjectTicketsByPriorityAsync(string priorityName, int companyId, int projectId);
         public Task<List<Ticket>> GetProjectTicketsByTypeAsync(string typeName, int companyId, int projectId);
 
-
+        public Task<List<Ticket>> GetUnassignedTicketsAsync(int companyId);
         public Task<int?> LookupTicketPriorityIdAsync(string priorityName);
         public Task<int?> LookupTicketStatusIdAsync(string statusName);
         public Task<int?> LookupTicketTypeIdAsync(string typeName);

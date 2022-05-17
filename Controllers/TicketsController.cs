@@ -13,6 +13,7 @@ using TheBugTrackerProject.Extensions;
 using TheBugTrackerProject.Models.Enums;
 using TheBugTrackerProject.Services.Interfaces;
 using System.IO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TheBugTrackerProject.Controllers
 {
@@ -80,6 +81,37 @@ namespace TheBugTrackerProject.Controllers
 
             return View(tickets);
         }
+
+
+        [Authorize(Roles="Admin, ProjectManager")]
+        public async Task<IActionResult> UnassignedTickets()
+        {
+            int companyId = User.Identity.GetCompanyId().Value;
+
+            string btUserId = _userManager.GetUserId(User);
+
+
+            List<Ticket> tickets = await _ticketService.GetUnassignedTicketsAsync(companyId);
+
+            if(User.IsInRole(nameof(Roles.Admin)))
+            {
+                return View(tickets);
+            } else
+            {
+                List<Ticket> pmTickets = new();
+
+                foreach(Ticket ticket in tickets)
+                {
+                    if(await _projectService.IsAssignProjectManagerAsync(btUserId,ticket.ProjectId))
+                    {
+                        pmTickets.Add(ticket);
+                    }
+                }
+
+                return View(pmTickets);
+            }
+        }
+
 
         // GET: Tickets/Details/5
         public async Task<IActionResult> Details(int? id)
