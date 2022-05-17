@@ -42,6 +42,20 @@ namespace TheBugTrackerProject.Services
             
         }
 
+        public async Task AddTicketCommentAsync(TicketComment ticketComment)
+        {
+            try
+            {
+                await _context.AddAsync(ticketComment);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
         public async Task ArchiveTicketAsync(Ticket ticket)
         {
             try
