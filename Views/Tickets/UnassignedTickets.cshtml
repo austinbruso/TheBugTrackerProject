@@ -39,7 +39,7 @@
                                         {
                                             if (User.IsInRole(nameof(Roles.Admin)) || User.IsInRole(nameof(Roles.ProjectManager)))
                                             {
-                                                <a class="btn btn-xs btn-info" asp-action="AssignDeveloper" asp-controller="Home" asp-route-ticketId="@ticket.Id">Assign Dev</a>
+                                                <a class="btn btn-xs btn-info" asp-action="AssignDeveloper" asp-controller="Ticket" asp-route-id="@ticket.Id">Assign Dev</a>
                                             }
 
                                         }

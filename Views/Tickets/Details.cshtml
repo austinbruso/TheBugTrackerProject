@@ -3,7 +3,7 @@
 
 @using TheBugTrackerProject.Models.Enums
 @using TheBugTrackerProject.Services.Interfaces
-@using Microsoft.AspNetCore.Identity 
+@using Microsoft.AspNetCore.Identity
 @using TheBugTrackerProject.Models
 
 @inject UserManager<BTUser> UserManager
@@ -22,6 +22,26 @@
 
 
 <h1>Ticket Details</h1>
+
+@if (!string.IsNullOrEmpty(Model.DeveloperUserId))
+{
+    <a href="javascript:void(0);">
+        @if (Model.DeveloperUser?.AvatarFileData != null)
+        {
+            <img class="media-object" src="data:image/*;base64,@(Convert.ToBase64String(btUser.AvatarFileData))" alt="" />
+        }
+        else
+        {
+            <img class="media-object" src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt="" style="width: 30px;height:30px;" />
+
+        }
+    </a>
+        <span class="text-muted" style="font-size:x-small;">
+           Developer:  <strong>@Model.DeveloperUser.FullName</strong>
+        </span>
+
+}
+
 
 <div>
     <div classxfont-weighteighteightgetainer-fluid">
@@ -42,7 +62,7 @@
                                         var percent = today >= end ? 100 : today < start ? 0 : Math.Round((today.Subtract(start)) / (end.Subtract(start)) * 100);
                                     }
                                     <div class="progress-bar" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: @percent;">
-                                       <span class="progress-value">@percent</span>
+                                        <span class="progress-value">@percent</span>
                                     </div>
                                 </div>
                             </div>
@@ -71,19 +91,20 @@
                             <div class="card-body" style="overflow-y:auto;height:600px;">
 
                                 <form class="form-horizontal form-bordered" asp-action="AddTicketComment" asp-controller="Tickets" enctype="multipart/form-data" method="post">
-                                    <input type="hidden" asp-for="Id" name="TicketId"/>
+                                    <input type="hidden" asp-for="Id" name="TicketId" />
                                     @if (Model.DeveloperUserId == btUser.Id || Model.OwnerUserId == btUser.Id || projectManager?.Id == btUser.Id || User.IsInRole(nameof(Roles.Admin)))
-                                     {
+                                    {
                                         <div class="form-group">
                                             <textarea asp-for="@(new TicketComment().Comment)" rows="8" class="form-control" required placeholder="Add comment ...."></textarea>
                                         </div>
                                         <button class="btn btn-sm btn-primary">Submit</button>
-                                     } else
-                                     {
+                                    }
+                                    else
+                                    {
                                         <div class="form-group">
                                             <textarea disabled asp-for="@(new TicketComment().Comment)" rows="8" class="form-control" required placeholder="Add comment....."></textarea>
                                         </div>
-                                     }
+                                    }
 
                                 </form>
 
@@ -92,7 +113,7 @@
                                 <ul class="right_chat list-unstyled mb-0">
 
                                     @foreach (TicketComment comment in Model.Comments)
-                                     {
+                                    {
                                         <li class="online mb-4">
                                             <div class="media">
                                                 <a href="javascript:void(0);">
@@ -108,7 +129,7 @@
                                                 </a>
                                                 <div class="media-body">
                                                     <span class="text-muted" style="font-size:x-small;">
-                                                        @@ @comment.User.FullName
+                                                        @comment.User.FullName
                                                         <small class="float-right">@comment.Created.ToString("MM.dd.yyyy h:ss tt")</small>
                                                     </span>
 
@@ -116,7 +137,7 @@
                                                 <span class="message text-primary">@Html.Raw(comment.Comment)</span>
                                             </div>
                                         </li>
-                                     } 
+                                    }
                                 </ul>
                             </div>
                             <div class="card-footer">
