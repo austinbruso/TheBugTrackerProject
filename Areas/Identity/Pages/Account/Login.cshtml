@@ -1,6 +1,10 @@
 ﻿@page
 @model LoginModel
 
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<BTUser> SignInManager
+@inject UserManager<BTUser> UserManager
+
 @{
     ViewData["Title"] = "Log in";
 }
@@ -34,6 +38,7 @@
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary">Log in</button>
                 </div>
+
                 <div class="form-group">
                     <p>
                         <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>

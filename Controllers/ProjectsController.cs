@@ -118,6 +118,43 @@ namespace TheBugTrackerProject.Controllers
             return View(project);
         }
 
+        public async Task<IActionResult> UnassignedProjects()
+        {
+            int companyId = User.Identity.GetCompanyId().Value;
+
+            List<Project> projects = new();
+
+            projects = await _projectService.GetUnassignedProjectsAsync(companyId);
+
+            return View(projects);
+
+        }
+
+        public async Task<IActionResult> AssignPM(int projectId)
+        {
+            int companyId = User.Identity.GetCompanyId().Value;
+
+            AssignPMViewModel model = new();
+
+            model.Project = await _projectService.GetProjectByIdAsync(projectId, companyId);
+            model.PMList = new SelectList(await _rolesService.GetUsersInRoleAsync(nameof(Roles.ProjectManager), companyId), "Id", "FullName");
+
+            return View(model);
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AssignPM(AssignPMViewModel model)
+        {
+            if(!string.IsNullOrEmpty(model.PMID))
+            {
+                await _projectService.AddProjectManagerAsync(model.PMID, model.Project.Id);
+
+                return RedirectToAction(nameof(Details), new { id = model.Project.Id });
+            }
+            return RedirectToAction(nameof(AssignPM), new { projectId = model.Project.Id});
+        }
+
         // GET: Projects/Create
         public async Task<IActionResult> Create()
         {
@@ -239,7 +276,7 @@ namespace TheBugTrackerProject.Controllers
         
 
         // GET: Projects/Archive/5
-        public async Task<IActionResult> Archive(int? id)
+        public async Task<IActionResult> Archive( int? id)
         {
             if (id == null)
             {
@@ -266,7 +303,7 @@ namespace TheBugTrackerProject.Controllers
         {
             int companyId = User.Identity.GetCompanyId().Value;
 
-            var project = await _context.Projects.FindAsync(id, companyId);
+            var project = await _context.Projects.FindAsync(id);
 
             await _projectService.ArchiveProjectAsync(project);
 
@@ -285,8 +322,6 @@ namespace TheBugTrackerProject.Controllers
             int companyId = User.Identity.GetCompanyId().Value;
             var project = await _projectService.GetProjectByIdAsync(id.Value, companyId);
 
-
-
             if (project == null)
             {
                 return NotFound();
@@ -295,14 +330,14 @@ namespace TheBugTrackerProject.Controllers
             return View(project);
         }
 
-        // POST: Projects/Archive/5
+        // POST: Projects/Restore/5
         [HttpPost, ActionName("Restore")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RestoreConfirmed(int id)
         {
             int companyId = User.Identity.GetCompanyId().Value;
 
-            var project = await _context.Projects.FindAsync(id, companyId);
+            var project = await _context.Projects.FindAsync(id);
 
             await _projectService.RestoreProjectAsync(project);
 

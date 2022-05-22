@@ -2,14 +2,14 @@
 @using TheBugTrackerProject.Models.Enums
 @using TheBugTrackerProject.Services.Interfaces
 @using Microsoft.AspNetCore.Identity
-@using TheBugTrackerProject.Models 
+@using TheBugTrackerProject.Models
 
 
 @inject UserManager<BTUser> userManager
 @inject IBTProjectService ProjectService
 @inject IBTHistoryService HistoryService
 
-@{ 
+@{
     ViewData["Title"] = "Details";
 
     BTUser btUser = await userManager.GetUserAsync(User);
@@ -54,8 +54,8 @@
                     <div class="card col m-1 p-2">
                         <div class="body">
                             <ul class=" list-unstyled basic-list">
-                                <li>Start Date: <span class="">@Model.StartDate.ToString("dd MM, YYYY")</span></li>
-                                <li>Deadline: <span class="">@Model.EndDate.ToString("dd MM, YYYY")</span></li>
+                                <li>Start Date: <span class="">@Model.StartDate.ToString("dd MMM, yyyy")</span></li>
+                                <li>Deadline: <span class="">@Model.EndDate.ToString("dd MMM, yyyy")</span></li>
                                 <li>Priority: <span class="">@Model.ProjectPriority?.Name</span></li>
                                 @* if() logic *@
                                 @if (today < end && today >= start)
@@ -66,8 +66,8 @@
                                 {
                                     <li>Status:<span class="">Inactive</span></li>
                                 }
-                                
-             
+
+
                             </ul>
                         </div>
                     </div>
@@ -84,45 +84,46 @@
                             @* if() logic for Avatar/Default etc *@
 
                             @if (projectManager != null)
-                            { 
-                            <div>
-
-                                @if (projectManager.AvatarFileData != null)
-                                {
-                                    <img class="rounder-circle" src="data:image/*;base64, @(Convert.ToBase64String(projectManager.AvatarFileData))" alt="" />
-                                }
-                                else
-                                {
-                                    <img class="rounder-circle" src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt="" />
-                                }
+                            {
                                 <div>
-                                    <h5>@projectManager.FullName</h5>
-                                    <span>@projectManager.Email</span>
-                                    <p class="text-muted m-b-0">Project Manager</p>
-                                    @if (User.IsInRole(nameof(Roles.Admin)) || (btUser.Id == projectManager.Id))
-                                    {
-                                        <a class="btn btn-xs btn-outline-coderfoundry" style="font:small;" asp-action="AssignUsers" asp-controller="Projects" asp-route-id="@Model.Id"></a>
-                                    }
-                                </div>
-                                
-                            </div>      
-                            } else
 
-                            { 
-                            <div>
-                                <img class="rounded-circle" style="width:60px;height:60px;" src="https://cdn.icon-icons.com/icons2/1378/PNG/avatardefault_92824.png" />
-                                <div class="wid-u-info">
-                                    <h5 class="text-muted m-b-0">Not Assigned</h5>
-                                    @if (User.IsInRole(nameof(Roles.Admin)))
+                                    @if (projectManager.AvatarFileData != null)
                                     {
-                                        <span><a asp-action="AssignProjectManager" asp-controller="Home" asp-route-id="@Model.Id" class="btn btn-xs btn-outline-info">Assign PM</a></span>
+                                        <img class="rounded-circle" src="data:image/*;base64, @(Convert.ToBase64String(projectManager.AvatarFileData))" alt="" />
                                     }
-                                    <span><a asp-action="AssignProjectManager" asp-controller="Home" asp-route-id="@Model.Id" class="btn btn-xs btn-outline-info">Assign PM</a></span>
+                                    else
+                                    {
+                                        <img class="rounded-circle " style="width: 60px; height:60px;" src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt="" />
+                                    }
+                                    <div>
+                                        <h5>@projectManager.FullName</h5>
+                                        <span>@projectManager.Email</span>
+                                        <p class="text-muted m-b-0">Project Manager</p>
+                                        @if (User.IsInRole(nameof(Roles.Admin)) || (btUser.Id == projectManager.Id))
+                                        {
+                                            <a class="btn btn-xs alert-primary" style="font:small;" asp-action="AssignUsers" asp-controller="Projects" asp-route-id="@Model.Id">Manage Team</a>
+                                        }
+                                    </div>
+
                                 </div>
-                            </div>
-                        
-            }
-                         </div>       
+                            }
+                            else
+
+                            {
+                                <div>
+                                    <img class="rounded-circle" style="width:60px;height:60px;" src="https://cdn.icon-icons.com/icons2/1378/PNG/avatardefault_92824.png" />
+                                    <div class="wid-u-info">
+                                        <h5 class="text-muted m-b-0">Not Assigned</h5>
+                                        @if (User.IsInRole(nameof(Roles.Admin)))
+                                        {
+                                            <span><a asp-action="AssignProjectManager" asp-controller="Home" asp-route-id="@Model.Id" class="btn btn-xs btn-outline-info">Assign PM</a></span>
+                                        }
+                                        <span><a asp-action="AssignProjectManager" asp-controller="Home" asp-route-id="@Model.Id" class="btn btn-xs btn-outline-info">Assign PM</a></span>
+                                    </div>
+                                </div>
+
+                            }
+                        </div>
                     </div>
                 </div>
             </div>
@@ -137,7 +138,8 @@
                             <ul class="right_chat list-unstyled mb-0">
                                 @* Logic for avatars *@
 
-                                @foreach (BTUser member in await ProjectService.GetAllProjectMembersExceptPMAsync(Model.Id)) {
+                                @foreach (BTUser member in await ProjectService.GetAllProjectMembersExceptPMAsync(Model.Id))
+                                {
                                     <li class="">
                                         <a href="">
                                             <div class="media">
@@ -147,7 +149,7 @@
                                                 }
                                                 else
                                                 {
-                                                  <img class="" src="https://cdn.icon-icons.com/icons2/1378/PNG/avatardefault_92824.png" />
+                                                    <img class="" src="https://cdn.icon-icons.com/icons2/1378/PNG/avatardefault_92824.png" />
                                                 }
                                                 <div class="">
                                                     <span class="">@member.FullName</span>
@@ -155,8 +157,8 @@
                                                 </div>
                                             </div>
                                         </a>
-                                   </li>
-                                 }
+                                    </li>
+                                }
                             </ul>
 
                         </div>
@@ -173,7 +175,7 @@
                         <div class="body" style="overflow-y:auto;height:300px;background-color:antiquewhite">
                             @* Project Activity loop *@
                             @foreach (TicketHistory history in await HistoryService.GetProjectTicketHistoryAsync(Model.Id, btUser.CompanyId.Value))
-           
+
                             {
                                 <div class="">
                                     <span class="date">@history.Created.ToString("dd MM, yyyy")</span>
@@ -241,14 +243,14 @@
                                                 </td>
                                                 @if (ticket.TicketStatus.Name == "New")
                                                 {
-                                                    <td><span class="">@ticket.TicketStatus.Name </span></td>
+                                                    <td><span class="badge-success">@ticket.TicketStatus.Name</span></td>
 
                                                 }
                                                 else
                                                 {
-                                                    <td><span class="">@ticket.TicketStatus.Name </span></td>
+                                                    <td><span class="badge-success">@ticket.TicketStatus.Name </span></td>
                                                 }
-                                                <td><span class="">@ticket.TicketPriority.Name </span></td>
+                                                <td><span class="badge-warning">@ticket.TicketStatus.Name </span></td>
                                                 <td>@ticket.Created.ToString("MM-dd-yyyy")</td>
                                                 <td>
                                                     <a class="btn btn-sm btn-outline-info" asp-action="Details" asp-controller="Tickets" asp-route-id="@ticket.Id"><i class="fs-5 bi-justify"></i></a>
